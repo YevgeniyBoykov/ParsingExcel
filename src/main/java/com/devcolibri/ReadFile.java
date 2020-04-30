@@ -14,6 +14,7 @@ public class ReadFile {
 
         while( ( line = reader.readLine() ) != null ) {
             stringBuilder.append( line );
+            System.out.println(stringBuilder);
             stringBuilder.append( ls );
         }
 
