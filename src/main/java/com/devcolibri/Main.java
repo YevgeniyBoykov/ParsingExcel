@@ -37,15 +37,12 @@ public class Main {
 //                    System.out.println(row.getRowNum() + ". " + checkStringFromExcel);
                     boolean isConsist = false;
                     int numberFoundPosition = 0;
-
                     for (int i = 0; i < arrTxt.length; i++) {
                         if (checkStringFromExcel.equals(arrTxt[i])) {
                             isConsist = true;
                             numberFoundPosition = i + 1;
-
                         }
                     }
-
                     if (isConsist) {
 //                        System.out.println("Element " + checkStringFromExcel+ " found in " + numberFoundPosition + " position in txt file!");
                     } else {
