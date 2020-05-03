@@ -7,56 +7,52 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 
 public class Main {
 
     public static void main(String... args) throws Exception {
-        String txtFile = "C:\\temp\\2\\test.txt";
-        File xlsFile = new File("C:\\temp\\2\\Book1.xlsx");
+        String txtFile = "C:\\temp\\2\\waitlist.txt";
+        File xlsFile = new File("C:\\temp\\2\\CV_10_Java_Class_Usage.xlsx");
+//        String regexp = "\"([^\"]*)\"";
+//        Pattern pattern = Pattern.compile(regexp);
 
         FileInputStream fileIn = new FileInputStream(xlsFile);
         XSSFWorkbook book = new XSSFWorkbook(fileIn);
 
         ReadFile file = new ReadFile();
         String[] arrTxt = file.readFile(txtFile).split(";");
-//        for (String str : arrTxt)
-//            System.out.println(str);
-        for(int sheetNum = 0; sheetNum < book.getNumberOfSheets(); sheetNum++)
-        {
+        System.out.println(arrTxt.length);
+
+        for (int sheetNum = 0; sheetNum < book.getNumberOfSheets(); sheetNum++) {
             XSSFSheet sheet = book.getSheetAt(sheetNum);
-
+            System.out.println(book.getSheetName(sheetNum));
             for (Row row : sheet) {
-                String checkStringFromExcel;
-                if (row.getLastCellNum() >= 2) {
-                    Cell cell = row.getCell(1);
-                    checkStringFromExcel = cell.getStringCellValue();
-//                    System.out.println(checkStringFromExcel);
+                if (row.getLastCellNum() == 2 && (row.getRowNum() > 0)) {
+                    Cell cellDefinition = row.getCell(0);
+                    Cell cellValue = row.getCell(1);
+                    String checkStringFromExcel = cellValue.getStringCellValue();
+                    checkStringFromExcel = checkStringFromExcel.substring(checkStringFromExcel.indexOf("(\"") + 2, checkStringFromExcel.indexOf("\")"));
+//                    System.out.println(row.getRowNum() + ". " + checkStringFromExcel);
                     boolean isConsist = false;
+                    int numberFoundPosition = 0;
 
-                    for(int i = 0; i < arrTxt.length; i++){
-                        if (checkStringFromExcel.equals(arrTxt[i])){
+                    for (int i = 0; i < arrTxt.length; i++) {
+                        if (checkStringFromExcel.equals(arrTxt[i])) {
                             isConsist = true;
-                        }
-//                        switch (cell.getCellType()) {
-//                            case STRING:
-//                                checkStringFromExcel = cell.getStringCellValue();
-//                                break;
-//                            case NUMERIC:
-//                                checkStringFromExcel = cell.getNumericCellValue();
-//                                break;
-//                            case BOOLEAN:
-//                                System.out.println(cell.getBooleanCellValue() + "\t");
-//                                break;
-//                            case FORMULA:
-//                                System.out.println(cell.getCellFormula() + "\t");
-//                                break;
-                    }
-                    if (isConsist) {
+                            numberFoundPosition = i + 1;
 
-                    } else{
-                        System.out.println("Item " + checkStringFromExcel + " not found in " + book.getSheetName(sheetNum)+ "!");
+                        }
+                    }
+
+                    if (isConsist) {
+//                        System.out.println("Element " + checkStringFromExcel+ " found in " + numberFoundPosition + " position in txt file!");
+                    } else {
+                        System.out.println("Item " + checkStringFromExcel + " not found in " + txtFile + "!");
+                        System.out.println(row.getRowNum());
+                        System.out.println(cellDefinition);
+                        System.out.println(checkStringFromExcel);
                     }
                 }
             }
